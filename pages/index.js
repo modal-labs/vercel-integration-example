@@ -104,27 +104,12 @@ export default function Home() {
       <main className="container mx-auto p-5">
         {error && <div>{error}</div>}
 
-        {/* <div className="border-hairline max-w-[512px] mx-auto relative">
-          <Dropzone
-            onImageDropped={setUserUploadedImage}
-            predictions={predictions}
-            userUploadedImage={userUploadedImage}
-          />
-          <div
-            className="bg-gray-50 relative max-h-[512px] w-full flex items-stretch"
-          >
-            <Canvas
-              predictions={predictions}
-              userUploadedImage={userUploadedImage}
-              onDraw={setMaskImage}
-            />
-          </div>
-        </div> */}
         {predictions.length > 0 ? 
           <Image
-              src={predictions[0]}
+              src={predictions[predictions.length - 1]}
               alt="preview image"
-              layout="fill"
+              height={768}
+              width={768}
           /> :
           <span>Run a prompt</span>
         }
@@ -133,16 +118,6 @@ export default function Home() {
           <PromptForm onSubmit={handleSubmit} />
 
           <div className="text-center">
-            {((predictions.length > 0 &&
-              predictions[predictions.length - 1].output) ||
-              maskImage ||
-              userUploadedImage) && (
-              <button className="lil-button" onClick={startOver}>
-                <StartOverIcon className="icon" />
-                Start over
-              </button>
-            )}
-
             <Download predictions={predictions} />
             <Link href="https://modal.com/docs/examples/stable_diffusion_xl">
               <a target="_blank" className="lil-button">

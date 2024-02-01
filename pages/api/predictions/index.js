@@ -31,10 +31,14 @@ export default async function handler(req, res) {
     return;
   }
 
-  const imageBuffer = await response.blob();
-  console.log(`Server endpoint received image of size ${imageBuffer.size} bytes`);
+  const imageBlob = await response.blob();
+  const arrayBuffer = await imageBlob.arrayBuffer();
+  const imageBuffer = Buffer.from(arrayBuffer);
   res.statusCode = 201;
-  res.setHeader('Content-Type', 'image/png');
+  res.setHeader(
+    'Content-Type', 'image/png',
+    'Content-Length', imageBuffer.size,
+  );
   res.send(imageBuffer);
   // res.end(JSON.stringify(prediction));
 }
