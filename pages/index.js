@@ -1,29 +1,30 @@
 import { useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
-import Canvas from "components/canvas";
 import PromptForm from "components/prompt-form";
-import Dropzone from "components/dropzone";
 import Download from "components/download";
 import Image from "next/image";
-import { XCircle as StartOverIcon } from "lucide-react";
 import { Code as CodeIcon } from "lucide-react";
 import { Wrench as WrenchIcon } from "lucide-react";
-
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 export default function Home() {
   const [predictions, setPredictions] = useState([]);
   const [error, setError] = useState(null);
-  const [maskImage, setMaskImage] = useState(null);
-  const [userUploadedImage, setUserUploadedImage] = useState(null);
+  const [index, setIndex] = useState(0);
+
+  const increment = () => {
+    setIndex(Math.min(index + 1, predictions.length - 1));
+  };
+
+  const decrement = () => {
+    setIndex(Math.max(index - 1, 0));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const body = {
       prompt: e.target.prompt.value,
-      mask: maskImage,
     };
 
     const response = await fetch("/api/predictions", {
@@ -33,10 +34,7 @@ export default function Home() {
       },
       body: JSON.stringify(body),
     });
-    console.log(response);
     const blob = await response.blob();
-    console.log(blob);
-    console.log(`Browser client received image of size ${blob.size} bytes`);
     const imageUrl = URL.createObjectURL(blob);
 
     if (response.status !== 201) {
@@ -44,36 +42,7 @@ export default function Home() {
       return;
     }
     setPredictions(predictions.concat([imageUrl]));
-    console.log(predictions);
-
-    // while (
-    //   prediction.status !== "succeeded" &&
-    //   prediction.status !== "failed"
-    // ) {
-    //   await sleep(1000);
-    //   const response = await fetch("/api/predictions/" + prediction.id);
-    //   // prediction = await response.json();
-    //   const blob = await response.blob();
-    //   const imageUrl = URL.createObjectURL(blob);
-    //   if (response.status !== 200) {
-    //     setError(prediction.detail);
-    //     return;
-    //   }
-    //   // setPredictions(predictions.concat([prediction]));
-    //   setPredictions(predictions.concat([imageUrl]));
-
-    //   if (prediction.status === "succeeded") {
-    //     setUserUploadedImage(null);
-    //   }
-    // }
-  };
-
-  const startOver = async (e) => {
-    e.preventDefault();
-    setPredictions([]);
-    setError(null);
-    setMaskImage(null);
-    setUserUploadedImage(null);
+    setIndex(predictions.length - 1);
   };
 
   return (
@@ -105,12 +74,18 @@ export default function Home() {
         {error && <div>{error}</div>}
 
         {predictions.length > 0 ? 
-          <Image
-              src={predictions[predictions.length - 1]}
-              alt="preview image"
-              height={768}
-              width={768}
-          /> :
+          <div>
+            <Image
+                src={predictions[index]}
+                alt="preview image"
+                height={768}
+                width={768}
+            />
+            <div class="flex justify-center space-x-4">
+              <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={increment}>Left</button>
+              <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onClick={decrement}>Right</button>
+            </div>
+          </div> :
           <span>Run a prompt</span>
         }
 
