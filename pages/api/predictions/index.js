@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     "negative_prompt": "deformed, ugly",
   });
 
-  const response = await fetch("https://modal-labs--instant-stable-diffusion-xl-dev.modal.run", {
+  const response = await fetch("https://modal-labs--instant-stable-diffusion-xl.modal.run", {
     method: "POST",
     headers: {
       Authorization: `Token ${process.env.MODAL_TOKEN_ID}:${process.env.MODAL_TOKEN_SECRET}`,
