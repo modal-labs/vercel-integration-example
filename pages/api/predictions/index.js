@@ -14,6 +14,7 @@ export default async function handler(req, res) {
     "negative_prompt": "deformed, ugly",
   });
 
+  // const response = await fetch("https://modal-labs--instant-stable-diffusion-xl.modal.run/v1/inference", {
   const response = await fetch("https://modal-labs--instant-stable-diffusion-xl.modal.run/v1/inference", {
     method: "POST",
     headers: {
