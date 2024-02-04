@@ -1,3 +1,7 @@
+import fetch from 'node-fetch';
+import fetch from 'node-fetch';
+
+
 export default async function handler(req, res) {
   // remove null and undefined values
   req.body = Object.entries(req.body).reduce(
@@ -7,15 +11,10 @@ export default async function handler(req, res) {
   console.log(`starting request ${req.body}`);
 
   const body = JSON.stringify({
-    prompt: req.body.prompt,
-    height: 768,
-    width: 768,
-    num_outputs: 1,
-    "negative_prompt": "deformed, ugly",
+    text: req.body.prompt,
   });
 
-  // const response = await fetch("https://modal-labs--instant-stable-diffusion-xl.modal.run/v1/inference", {
-  const response = await fetch("https://modal-labs--instant-stable-diffusion-xl.modal.run/v1/inference", {
+  const response = await fetch("https://modal-labs--tts.modal.run", {
     method: "POST",
     headers: {
       Authorization: `Token ${process.env.MODAL_TOKEN_ID}:${process.env.MODAL_TOKEN_SECRET}`,
@@ -25,20 +24,12 @@ export default async function handler(req, res) {
   });
 
   console.log(`Modal Instant Endpoint response (HTTP status: ${response.status}): ${response}`);
-  if (response.status !== 201) {
-    let error = await response.json();
-    res.statusCode = 500;
-    res.end(JSON.stringify({ detail: error.detail }));
+  if (response.ok) {
+    const audioBuffer = await response.body();
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'audio/wav');
+    res.send(audioBuffer);
     return;
   }
 
-  const imageBlob = await response.blob();
-  const arrayBuffer = await imageBlob.arrayBuffer();
-  const imageBuffer = Buffer.from(arrayBuffer);
-  res.statusCode = 201;
-  res.setHeader(
-    'Content-Type', 'image/png',
-    'Content-Length', imageBuffer.size,
-  );
-  res.send(imageBuffer);
 }
