@@ -1,5 +1,7 @@
+// To run: `node --loader ts-node/esm index.ts`
 import fs from "fs";
 import { Buffer } from 'buffer';
+
 
 const generateSDXLImage = async () => {
     const body = JSON.stringify({
