@@ -15,19 +15,15 @@ export default function Home() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const body = {
-      prompt: e.target.prompt.value,
-    };
-
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const formData = new FormData();
+    const file = e.target.audio.files[0];
+    formData.append('audio', file, file.name);
+    formData.append("diarize_audio", true);
 
     // Fetch the audio file with the Fetch API
-    const response = await fetch("/api/predictions", {
+    const response = await fetch("https://modal-labs--whisper.modal.run", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body)
+      body: formData,
     });
 
 
@@ -36,16 +32,7 @@ export default function Home() {
       return;
     }
 
-    const arrayBuffer = await response.arrayBuffer();
-    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-
-    const source = audioContext.createBufferSource();
-    source.buffer = audioBuffer;
-
-    source.connect(audioContext.destination);
-
-    source.start();
-
+    console.log(await response.json());
   };
 
   return (

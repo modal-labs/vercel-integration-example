@@ -27,6 +27,7 @@ export default function PromptForm(props) {
       className="py-5 animate-in fade-in duration-700"
     >
       <div className="flex max-w-[512px]">
+        <input type="file" id="audioInput" accept="audio/*" name="audio" />
         <input
           type="text"
           defaultValue={prompt}
