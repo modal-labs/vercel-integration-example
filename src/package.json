@@ -11,7 +11,7 @@
   "dependencies": {
     "lodash": "^4.17.21",
     "lucide-react": "^0.88.0",
-    "next": "^12.3.0",
+    "next": "^13.5.1",
     "pngjs": "^6.0.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
