@@ -6,9 +6,9 @@ import Link from "next/link";
 import { Code as CodeIcon } from "lucide-react";
 import { Wrench as WrenchIcon } from "lucide-react";
 
-import Download from "components/download";
-import Footer from "components/footer";
-import Form from "components/form";
+import Download from "src/components/download";
+import Footer from "src/components/footer";
+import Form from "src/components/form";
 
 export default function Home() {
   const [predictions, setPredictions] = useState([]);
